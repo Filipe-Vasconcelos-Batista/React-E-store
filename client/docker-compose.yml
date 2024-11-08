@@ -1,0 +1,10 @@
+services:
+  e-store:
+    container_name: ${WEB_HOST}
+    build: .
+    ports:
+      - "3000:80"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      API: ${API}
