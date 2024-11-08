@@ -1,22 +1,21 @@
 <?php
+require __DIR__ . '/../vendor/autoload.php';
+
 use Doctrine\DBAL\DriverManager;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\ORMSetup;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
-$config = ORMSetup::createAttributeMetadataConfiguration(
-    paths: [__DIR__ . '/src'],
-    isDevMode: true,
-);
-
-$connection = DriverManager::getConnection([
+$params = [
     'driver' => 'pdo_mysql',
-    'host' => getenv('DB_HOST'),
-    'port' => getenv('DB_PORT'),
-    'user' => getenv('DB_USER'),
-    'password' => getenv('DB_PASS'),
-    'charset' => 'utf8mb4',
-], $config);
+    'host' => $_ENV['DB_HOST'],
+    'port' => $_ENV['DB_PORT'],
+    'user' => $_ENV['DB_USER'],
+    'password' => $_ENV['DB_PASS'],
+    'dbname' => $_ENV['DB_NAME'],
+    'charset' => 'utf8mb4'
+];
 
-return new EntityManager($connection, $config);
+$connection = DriverManager::getConnection($params);
+
+return $connection;

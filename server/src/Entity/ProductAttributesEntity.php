@@ -2,14 +2,13 @@
 
 namespace App\Entity;
 
-use App\Entity\BaseEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'product_attributes')]
 class ProductAttributesEntity extends BaseEntity
 {
-    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'attributes')]
+    #[ORM\ManyToOne(targetEntity: ProductEntity::class, inversedBy: 'attributes')]
     #[ORM\JoinColumn(name: 'product_id', referencedColumnName: 'id', nullable: false)]
     private ProductEntity $product;
 

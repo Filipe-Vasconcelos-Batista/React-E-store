@@ -2,26 +2,31 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-#[ORM\Entity]
-#[ORM\Table(name: 'products')]
+
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\Table;
+#[Entity]
+#[Table(name: 'products')]
 class ProductEntity extends BaseEntity
 {
-    #[ORM\ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'products')]
-    #[ORM\JoinColumn(name:'category_id', referencedColumnName:'id')]
+    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'products')]
+    #[JoinColumn(name:'category_id', referencedColumnName:'id')]
     private CategoryEntity $category;
 
-    #[ORM\Column(type:'text')]
+    #[Column(type:'text')]
     private string $description;
 
-    #[ORM\Column(type:'boolean')]
+    #[Column(type:'boolean')]
     private bool $inStock;
 
-    #[ORM\Column(type: 'decimal', precision:10, scale: 2)]
+    #[Column(type: 'decimal', precision:10, scale: 2)]
     private float $price;
 
-    #[ORM\ManyToOne(targetEntity: BrandEntity::class, inversedBy: 'products')]
-    #[ORM\JoinColumn(name:'brand_id', referencedColumnName:'id')]
+    #[ManyToOne(targetEntity: BrandEntity::class, inversedBy: 'products')]
+    #[JoinColumn(name:'brand_id', referencedColumnName:'id')]
     private BrandEntity $brand;
 
     /**

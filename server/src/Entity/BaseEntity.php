@@ -2,18 +2,21 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\MappedSuperclass;
 
 
-#[ORM\MappedSuperclass]
-class BaseEntity
+#[MappedSuperclass]
+abstract class BaseEntity
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[Id]
+    #[GeneratedValue]
+    #[Column(type: 'integer')]
     protected int $id;
 
-    #[ORM\Column(type: 'string')]
+    #[Column(type: 'string')]
     protected string $name;
 
     /**
