@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.negative-margin {
+    margin-top: -40px; /* Adjust the values as needed */
+    margin-left: 300px;
+}
