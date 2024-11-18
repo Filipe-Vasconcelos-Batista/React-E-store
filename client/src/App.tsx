@@ -1,23 +1,29 @@
-import Navbar  from "./components/Navbar.tsx";
-import Card from "./components/Card.tsx"
-export default function App() {
-    return (
-        <>
-            <Navbar/>
-            <div className="flex mb-4">
-                <div className="w-1/3 h-12">
-                    <Card title='newTitle' image='https://refactoring.guru/images/content-public/logos/logo-new.png?id=97d554614702483f31e38b32e82d8e34' value='12.99' />
-                </div>
-                <div className="w-1/3  h-12">
-                    <Card title='newTitle' image='https://refactoring.guru/images/content-public/logos/logo-new.png?id=97d554614702483f31e38b32e82d8e34' value='12.99' />
-                </div>
-                <div className="w-1/3  h-12">
-                    <Card title='newTitle' image='https://refactoring.guru/images/content-public/logos/logo-new.png?id=97d554614702483f31e38b32e82d8e34' value='12.99' />
-                </div>
-            </div>
+import {
+    Route,
+    createBrowserRouter,
+    createRoutesFromElements,
+    RouterProvider,
+} from 'react-router-dom'
 
+import Homepage from './views/Homepage.tsx'
+import MainLayout from "./layouts/MainLayout.tsx";
+import Individual from './views/Individual.tsx'
+import NotFound from './views/NotFound.tsx'
 
+const router= createBrowserRouter(
+    createRoutesFromElements(
+        <Route path='/' element={<MainLayout />}>
+            <Route index element={<Homepage />} />
+            <Route path='/:id' element={<Individual />} />
+            <Route path='*' element={<NotFound />} />
+        </Route>
+    )
+);
 
-        </>
-)
+const App= () =>{
+    return <RouterProvider router={router} />;
 }
+
+export default App
+
+
