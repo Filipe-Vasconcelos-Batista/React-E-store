@@ -1,3 +1,5 @@
+import {Link} from "react-router-dom";
+
 export default function card({title, value, image
 }){
 return(
@@ -10,6 +12,12 @@ return(
                     <p className=" text-xl mb-2">
                         {value} $
                     </p>
+                    <Link
+                        to='/1'
+                        >
+                        See more
+
+                    </Link>
                 </div>
         </div>
     </>
