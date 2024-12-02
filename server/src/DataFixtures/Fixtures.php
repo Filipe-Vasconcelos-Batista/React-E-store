@@ -5,6 +5,7 @@ require __DIR__.'/../../vendor/autoload.php';
 $entityManager= require __DIR__.'/../../config/entity_manager.php';
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\ProductEntity;
 use App\Entity\ProductAttributesEntity;
@@ -17,7 +18,22 @@ class Fixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         echo "starting Fixtures ....\n";
-        $json = file_get_contents(__DIR__ . '../../public/documents/products.json');
+        // Clear data for each entity
+        $manager->getConnection()->executeQuery('SET FOREIGN_KEY_CHECKS=0;');
+        $manager->createQuery('DELETE FROM App\Entity\ProductEntity')->execute();
+        $manager->createQuery('DELETE FROM App\Entity\ProductAttributesEntity')->execute();
+        $manager->createQuery('DELETE FROM App\Entity\AttributeItemsEntity')->execute();
+        $manager->createQuery('DELETE FROM App\Entity\BrandEntity')->execute();
+        $manager->createQuery('DELETE FROM App\Entity\CategoryEntity')->execute();
+        $manager->getConnection()->executeQuery('SET FOREIGN_KEY_CHECKS=1;');
+        echo "Database entities cleared successfully.\n";
+
+        echo "Databased Purged. \n";
+        $json = file_get_contents( '../../public/documents/products.json');
+        if ($json === false) {
+            echo "Failed to read JSON file.\n"; return;
+        }
+        echo "JSON file read successfully.\n";
         $data = json_decode($json, true);
         if(!$data){
             echo "failed to decode JSON. \n";
@@ -41,6 +57,9 @@ class Fixtures extends Fixture
                 $brand = new BrandEntity();
                 $brand->setName($productData['brand']);
                 $manager->persist($brand);
+            }
+            else {
+                echo "Found existing brand: " . $productData['brand'] . "\n";
             }
 
             // Create product
@@ -72,5 +91,8 @@ class Fixtures extends Fixture
             }
         }
         $manager->flush();
+        echo "Fixtures loaded successfully.\n";
     }
 }
+$fixtures = new Fixtures();
+$fixtures->load($entityManager);
