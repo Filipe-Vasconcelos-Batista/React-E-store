@@ -22,7 +22,7 @@ class ProductEntity extends BaseEntity
     #[Column(type:'boolean')]
     private bool $inStock;
 
-    #[Column(type: 'decimal', precision:10, scale: 2)]
+    #[Column(type: 'decimal', precision: 10, scale: 2)]
     private float $price;
 
     #[ManyToOne(targetEntity: BrandEntity::class, inversedBy: 'products')]

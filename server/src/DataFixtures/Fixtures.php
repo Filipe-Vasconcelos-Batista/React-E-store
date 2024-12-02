@@ -67,7 +67,8 @@ class Fixtures extends Fixture
             $product->setName($productData['name']);
             $product->setDescription($productData['description']);
             $product->setInStock($productData['inStock']);
-            $product->setPrice($productData['prices'][0]['amount']); // Set the price from the prices array
+            $price = (float)$productData['prices'][0]['amount'];
+            $product->setPrice($price);
             $product->setCategory($categories[$productData['category']]);
             $product->setBrand($brand);
             $manager->persist($product);
