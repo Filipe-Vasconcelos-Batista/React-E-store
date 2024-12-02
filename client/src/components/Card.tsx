@@ -16,7 +16,6 @@ return(
                         to='/1'
                         >
                         See more
-
                     </Link>
                 </div>
         </div>

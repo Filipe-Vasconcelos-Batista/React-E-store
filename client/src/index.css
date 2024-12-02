@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 .negative-margin {
-    margin-top: -40px; /* Adjust the values as needed */
+    margin-top: -40px;
     margin-left: 300px;
+}
+.dark-filter {
+    filter: grayscale(60%);
+    opacity: 0.5;
 }

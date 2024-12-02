@@ -3,9 +3,7 @@ import Cart from './Cart.tsx'
 import  {useState} from 'react'
 import {Link} from 'react-router-dom'
 
-export default function Navbar() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const toggleMenu = ():void => { setIsMenuOpen(!isMenuOpen); };
+export default function Navbar({ toggleMenu, isMenuOpen }) {
     return(
         <>
             <nav className="flex items-center justify-between flex-wrap  p-6">
