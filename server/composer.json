@@ -13,5 +13,8 @@
             "App\\": "src/",
             "Migrations\\": "migrations/"
         }
+    },
+    "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.7"
     }
 }

@@ -10,3 +10,6 @@
     filter: grayscale(60%);
     opacity: 0.5;
 }
+.outlet-container {
+    transition: filter 0.3s, opacity 0.3s;
+}

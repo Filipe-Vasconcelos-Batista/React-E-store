@@ -17,5 +17,4 @@ RUN a2enmod rewrite
 RUN composer install
 
 EXPOSE 80
-CMD ["sh", "-c", "./config/waitForIt.sh database:3306 -- ./vendor/bin/doctrine-migrations migrate --no-interaction && apache2-foreground"]
-
+CMD ["sh", "-c", "./config/waitForIt.sh database:3306 -- echo 'Database is up' && ./vendor/bin/doctrine-migrations migrate --no-interaction && php /var/www/html/server/src/DataFixtures/Fixtures.php && echo 'Fixtures loaded' && apache2-foreground"]
