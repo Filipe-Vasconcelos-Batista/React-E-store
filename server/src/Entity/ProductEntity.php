@@ -74,9 +74,9 @@ class ProductEntity extends BaseEntity
     }
 
     /**
-     * @param bool $price
+     * @param float $price
      */
-    public function setPrice(bool $price): void
+    public function setPrice(float $price): void
     {
         $this->price = $price;
     }

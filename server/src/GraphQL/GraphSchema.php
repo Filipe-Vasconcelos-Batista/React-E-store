@@ -1,11 +1,11 @@
 <?php
-// src/GraphQL/GraphSchema.php
+
 namespace App\GraphQL;
 
+use App\Entity\CategoryEntity;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use GraphQL\Type\SchemaConfig;
 use RuntimeException;
 use App\Entity\ProductEntity;
 
@@ -87,10 +87,27 @@ class GraphSchema {
             ]
         ]);
 
-        // Define the Query Type
+
         $queryType = new ObjectType([
             'name' => 'Query',
             'fields' => [
+                'categories' => [
+                    'type' => Type::listOf($categoryType),
+                    'resolve' => function($rootValue, $args, $context) {
+                        $entityManager = $context['entityManager'];
+                        $connection = $entityManager->getConnection();
+
+                        $stmt = $connection->prepare('SELECT * FROM categories');
+                        $rawCategories = $stmt->executeQuery()->fetchAllAssociative();
+
+                        return array_map(function($raw) {
+                            return [
+                                'id' => (int)$raw['id'],
+                                'name' => $raw['name']
+                            ];
+                        }, $rawCategories);
+                    }
+                    ],
                 'products' => [
                     'type' => Type::listOf($productType),
                     'resolve' => function($rootValue, $args, $context) {

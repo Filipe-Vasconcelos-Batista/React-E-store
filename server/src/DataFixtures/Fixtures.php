@@ -5,7 +5,6 @@ require __DIR__.'/../../vendor/autoload.php';
 $entityManager= require __DIR__.'/../../config/entity_manager.php';
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\ProductEntity;
 use App\Entity\ProductAttributesEntity;
@@ -27,8 +26,6 @@ class Fixtures extends Fixture
         $manager->createQuery('DELETE FROM App\Entity\CategoryEntity')->execute();
         $manager->getConnection()->executeQuery('SET FOREIGN_KEY_CHECKS=1;');
         echo "Database entities cleared successfully.\n";
-
-        echo "Databased Purged. \n";
         $json = file_get_contents( '../../public/documents/products.json');
         if ($json === false) {
             echo "Failed to read JSON file.\n"; return;
@@ -51,15 +48,17 @@ class Fixtures extends Fixture
 
         // Process products
         foreach ($data['products'] as $productData) {
-            // Find or create brand
-            $brand = $manager->getRepository(BrandEntity::class)->findOneBy(['name' => $productData['brand']]);
-            if (!$brand) {
+            $brandName = trim($productData['brand']);
+            $brandRepository = $manager->getRepository(BrandEntity::class);
+            $brand = $brandRepository->findOneBy(['name' => $brandName]);
+            if ($brand) {
+                echo "Found existing brand: " . $productData['brand'] . "\n";
+            }
+            else {
                 $brand = new BrandEntity();
                 $brand->setName($productData['brand']);
                 $manager->persist($brand);
-            }
-            else {
-                echo "Found existing brand: " . $productData['brand'] . "\n";
+                $manager->flush();
             }
 
             // Create product
@@ -72,6 +71,7 @@ class Fixtures extends Fixture
             $product->setCategory($categories[$productData['category']]);
             $product->setBrand($brand);
             $manager->persist($product);
+            $manager->flush();
 
             // Process attributes
             foreach ($productData['attributes'] as $attributeData) {
@@ -80,6 +80,7 @@ class Fixtures extends Fixture
                 $attribute->setType($attributeData['type']);
                 $attribute->setProduct($product);
                 $manager->persist($attribute);
+                $manager->flush();
 
                 foreach ($attributeData['items'] as $itemData) {
                     $attributeItem = new AttributeItemsEntity();
@@ -88,6 +89,7 @@ class Fixtures extends Fixture
                     $attributeItem->setValue($itemData['value']);
                     $attributeItem->setAttribute($attribute);
                     $manager->persist($attributeItem);
+                    $manager->flush();
                 }
             }
         }
