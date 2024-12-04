@@ -3,6 +3,7 @@ import {
     createBrowserRouter,
     createRoutesFromElements,
     RouterProvider,
+    useLocation
 } from 'react-router-dom'
 
 import Homepage from './views/Homepage.tsx'

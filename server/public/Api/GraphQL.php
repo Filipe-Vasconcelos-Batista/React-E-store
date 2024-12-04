@@ -3,9 +3,9 @@ require __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../src/GraphQL/GraphSchema.php';
 use GraphQL\GraphQL as GraphQLBase;
 use App\GraphQL\GraphSchema;
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+header('Access-Control-Allow-Origin: http://localhost:3000');  // Allows all origins (less secure)
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
 // Load SchemaQL schema
 $schemaQL = new GraphSchema();

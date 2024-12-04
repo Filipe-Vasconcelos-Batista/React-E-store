@@ -1,27 +1,47 @@
 import Logo from '../assets/images/bag-smile-svgrepo-com.svg'
 import Cart from './Cart.tsx'
-import  {useState} from 'react'
-import {Link} from 'react-router-dom'
+import  {useState, useEffect,} from 'react'
+import {Link, useNavigate} from 'react-router-dom'
 
 export default function Navbar({ toggleMenu, isMenuOpen }) {
+    const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+    const navigate= useNavigate();
+    const handleCategoryClick=(categoryName)=>{
+        navigate(`/?category=${categoryName}`);
+    }
+    const [categories, setCategories] = useState([]);
+    useEffect(()=>{
+        const fetchCategories= async()=>{
+            const response= await fetch('http://localhost:8080/Api/GraphQL.php',{
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    query:`{
+                        categories{
+                            id
+                            name
+                        }
+                    }`
+                })
+            })
+            const result=await response.json();
+            setCategories(result.data.categories);
+        }
+        fetchCategories();
+    },[]);
     return(
         <>
             <nav className="flex items-center justify-between flex-wrap  p-6">
                 <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                     <div className="text-sm lg:flex-grow">
-                        <Link
-                            to='/'
-                           className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-green-700 mr-4">
-                            Women
-                        </Link>
-                        <a href="#responsive-header"
-                           className="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-green-700 mr-4">
-                            Men
-                        </a>
-                        <a href="#responsive-header"
-                           className="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-green-700">
-                            Kids
-                        </a>
+                        {categories.map(category=>(
+                            <button className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-green-700 mr-4" key={category.id}
+                            onClick={()=>handleCategoryClick(category.name)}>
+                                {capitalizeFirstLetter(category.name)}
+                            </button>
+                        ))}
                     </div>
                     <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                         <img
