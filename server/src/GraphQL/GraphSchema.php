@@ -2,12 +2,12 @@
 
 namespace App\GraphQL;
 
+use App\Entity\BrandEntity;
 use App\Entity\CategoryEntity;
+use App\Entity\ProductAttributesEntity;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use RuntimeException;
-use App\Entity\ProductEntity;
 
 class GraphSchema {
     public function getGraphQLSchema(): Schema
@@ -112,7 +112,33 @@ class GraphSchema {
                     'type' => Type::listOf($productType),
                     'resolve' => function($rootValue, $args, $context) {
                         $entityManager = $context['entityManager'];
-                        return $entityManager->getRepository(ProductEntity::class)->findAll();
+                        $connection=$entityManager->getConnection();
+
+                        $category=$args['category'] ?? null;
+
+                        $query= 'SELECT * FROM products';
+
+                        if($category && $category !=='all'){
+                            $query . ' WHERE category = :category';
+                            $params['category'] = $category;
+                        }
+
+                        $stmt = $connection->prepare($query);
+                        $rawProducts = $stmt->executeQuery()->fetchAllAssociative();
+                        return array_map(function($raw) use($entityManager) {
+                            $category= $entityManager->getRepository(CategoryEntity::class)->find($raw['name']);
+                            $brand= $entityManager->getRepository(BrandEntity::class)->find($raw['name']);
+                            $attributes= $entityManager->getRepository(ProductAttributesEntity::class)->findBy(['product'=> $raw['id']]);
+                            return [
+                                'id' => (int)$raw['id'],
+                                'description' => $raw['description'],
+                                'inStock' => (bool)$raw['inStock'],
+                                'price' => (float)$raw['price'],
+                                'category' => $category,
+                                'brand' => $brand,
+                                'attributes' => $attributes
+                            ];
+                        }, $rawProducts);
                     }
                 ],
             ]

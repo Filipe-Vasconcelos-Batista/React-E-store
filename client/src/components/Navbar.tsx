@@ -12,7 +12,7 @@ export default function Navbar({ toggleMenu, isMenuOpen }) {
     const [categories, setCategories] = useState([]);
     useEffect(()=>{
         const fetchCategories= async()=>{
-            const response= await fetch(process.env.REACT_APP_API_URL,{
+            const response= await fetch('http://localhost:8080/Api/GraphQL.php',{
                 method:'POST',
                 headers:{
                     'Content-Type': 'application/json'
